@@ -7,12 +7,12 @@ class ActivationHook:
     def __init__(self, layer) -> None:
 
         self.activation = []
-        layer.register_forward_hook()
+        self.handle = layer.register_forward_hook(self.hook_fn)
 
-    def hook_fn(self):
-        def hook(module, inp, outp):
-            self.activation.append(outp.detach().cpu().numpy())
-        return hook
+    def hook_fn(self, module, inp, outp):
+        op = outp.clone().detach().cpu().numpy()
+        self.activation.append(op.reshape(1, -1))
+        # self.activation.append(op)
 
 
 def get_named_layers(model, record_layers):
@@ -20,13 +20,13 @@ def get_named_layers(model, record_layers):
     handles = {}
     all_layers = list(model.named_children())
     for id in record_layers:
-        name, layer = [all_layers[id]]
+        name, layer = all_layers[id]
         handles[name] = ActivationHook(layer)
     
     return handles
 
 
-def get_pret_models(model_name, pret=True, record_layers=[-3,]):
+def get_pret_models(model_name, pret=True, record_layers=[-2,]):
     r"""
     :Input:
            model_name - name of model

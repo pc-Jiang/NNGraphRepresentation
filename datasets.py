@@ -1,9 +1,10 @@
+import numpy as np
 import torch
 import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, Subset
 
-from configs_global import DATA_DIR
+from configs_global import DATA_DIR, DEVICE
 
 
 def get_image_dataset_subset(dataset_name='CIFAR10',
@@ -37,14 +38,36 @@ def get_image_dataset_subset(dataset_name='CIFAR10',
 
 
 def model_representation(model, handles, data_loader, max_num_data=1000):
+    r"""
+    A function 
+    :Input:
+               model - The Neural network model to be investigated
+             handles - dict of hook functions for target layers {layer_name: hook_fn}
+         data_loader - data loader to load the image data
+        max_num_data - number of samples that is to record activation
+
+    :Output:
+        activation - numpy array shape [n, $dim_features$] that each row is a flattened representation recorded from handles
+    """
     with torch.no_grad():
         for i, data in enumerate(data_loader):
             inputs, _ = data
-            outputs = model(inputs)
+            outputs = model(inputs.to(DEVICE))
 
             if (i+1) * data_loader.batch_size > max_num_data:
                 break
     
-    for k, v in handles:
-        pass
-    pass
+    activation = {}
+    for k, v in handles.items():
+        activation[k] = np.concatenate(v.activation, axis=0)
+        v.handle.remove()
+    
+    return activation
+
+
+if __name__ == '__main__':
+    from models import get_pret_models
+    model, transform, handles = get_pret_models('VGG')
+    data_loader = get_image_dataset_subset('CIFAR10', transform)
+    activation = model_representation(model, handles, data_loader, max_num_data=20)
+    
