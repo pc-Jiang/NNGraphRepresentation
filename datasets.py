@@ -39,7 +39,7 @@ def get_image_dataset_subset(dataset_name='CIFAR10',
 
 def model_representation(model, handles, data_loader, max_num_data=1000):
     r"""
-    A function 
+    A function to get the model representations 
     :Input:
                model - The Neural network model to be investigated
              handles - dict of hook functions for target layers {layer_name: hook_fn}
@@ -70,4 +70,3 @@ if __name__ == '__main__':
     model, transform, handles = get_pret_models('VGG')
     data_loader = get_image_dataset_subset('CIFAR10', transform)
     activation = model_representation(model, handles, data_loader, max_num_data=20)
-    
