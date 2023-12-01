@@ -10,8 +10,8 @@ import distances.les as les
 
 
 class CompareBase:
-    def __init__(self, iter_num, dict_keys):
-        self.all_distances = {key: np.zeros((iter_num, 1))  for key in dict_keys}
+    def __init__(self, num_models):
+        self.all_distances = np.zeros(num_models)
     
     @abc.abstractmethod
     def _comp_desc(self, data):
@@ -29,10 +29,10 @@ class CompareBase:
         :return dist: distance between the datasets based on the given algorithm
         """
 
-    def compare_dataset(self, ite, data1, data2, key):
+    def compare_dataset(self, data1, data2, m_id1, m_id2):
         desc1 = self._comp_desc(data1)
         desc2 = self._comp_desc(data2)
-        self.all_distances[key][ite] = self._comp_dist(desc1, desc2)
+        self.all_distances[m_id1, m_id2] = self._comp_dist(desc1, desc2)
 
 
 class CompareLES(CompareBase):
