@@ -1,7 +1,14 @@
+import os
+import os.path as osp
 import json
+import numpy as np
+
 from exp_utils import prepare_experiments
 from distances.dis_utils import get_all_distances
 from configs_global import RESULT_DIR
+from plots import heatmap_plot
+
+os.makedirs(RESULT_DIR, exist_ok=True)
 
 
 class ExpConfig(object):
@@ -11,6 +18,7 @@ class ExpConfig(object):
         self.dataset = 'CIFAR10'
         self.target_class = [0, ]
         self.num_samples = 1000
+        self.exp_name = ''
         # self.iter_num = 3
 
         self.pret = [True, ]
@@ -19,19 +27,32 @@ class ExpConfig(object):
         self.distance_measure = ['les', ]
 
 
-def save_json():
-    pass
+def save_json(file_path, *args):
+    data2save = []
+
+    for arg in args:
+        if isinstance(arg, np.ndarray):
+            arg = arg.tolist()
+        elif isinstance(arg, dict):
+            for k, v in arg.items():
+                arg[k] = v.tolist()
+        data2save.append(arg)
+
+    with open(file_path, 'w') as f:
+        json.dump(data2save, f)
 
 
 def compare_representation_across_models():
     # answer question: does representation for trained models related to structure?
     # assumption: ResNet18 and ResNet50 has smaller distance, AlexNet and VGG has smaller distance
     config = ExpConfig()
+    config.exp_name = 'compare_across_models'
     config.model_names = ['AlexNet', 'VGG', 'ResNet18', 'ResNet50']
     config.distance_measure = ['les', 'gw']
     model_name_list, activation_list = prepare_experiments(config)
     all_dist, row_names = get_all_distances(config.distance_measure, activation_list,  model_name_list)
-    # TODO: heatmap plot for distance matrix
+    heatmap_plot(config.exp_name, all_dist, row_names)
+    save_json(osp.join(RESULT_DIR, config.exp_name+'.json'))
 
 
 def compare_learnt_unlearnt():

@@ -1,6 +1,10 @@
+import os
 import torch
 import torchvision
-from configs_global import DEVICE
+from configs_global import DEVICE, MODEL_DIR
+
+os.environ['TORCH_HOME']=MODEL_DIR
+os.makedirs(MODEL_DIR, exist_ok=True)
 
 
 class ActivationHook:

@@ -24,7 +24,9 @@ Optional packages and repositories for comparisons with other algorithms:
     - GW [4] - requires [pot](https://pythonot.github.io/auto_examples/plot_Intro_OT.html).
 
 ## Repository structure
+Run `python main.py -a [exp_name]` for an experiment. For example,
 
+`python main.py -a compare_representation_across_models`
 
 
 ## References
