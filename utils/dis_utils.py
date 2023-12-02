@@ -7,7 +7,7 @@ def reorgnize_activation(activation_list, model_names):
     for i, activation in enumerate(activation_list):
         name = model_names[i]
 
-        for k, v in activation:
+        for k, v in activation.items():
             # k is the layer to be recorded
             new_key = name + k # new_key: model+pret+layer
             new_act_dict[new_key] = v
@@ -19,7 +19,7 @@ def get_distance(dis_name, act_dict):
     pairs = {'{}+{}'.format(k1, k2): [v1, v2] for k1, v1 in act_dict.items() for k2, v2 in act_dict.items() if k1 < k2}
     num_models = len(act_dict)
     
-    if dis_name == 'LES':
+    if dis_name == 'les':
         distance = comparisons.CompareLES(num_models)
     elif dis_name == 'gw':
         distance = comparisons.CompareGW(num_models)

@@ -11,7 +11,7 @@ import distances.les as les
 
 class CompareBase:
     def __init__(self, num_models):
-        self.all_distances = np.zeros(num_models)
+        self.all_distances = np.zeros((num_models, num_models))
     
     @abc.abstractmethod
     def _comp_desc(self, data):
@@ -36,11 +36,11 @@ class CompareBase:
 
 
 class CompareLES(CompareBase):
-    def __init__(self, *args):
-        super().__init__(*args)
-        self.sigma = 2
-        self.nev = 200
-        self.gamma = 1e-8
+    def __init__(self, num_models, sigma=2, nev=200, gamma=1e-8):
+        super().__init__(num_models)
+        self.sigma = sigma
+        self.nev = nev
+        self.gamma = gamma
 
     def _comp_desc(self, data):
         desc = les.les_desc_comp(data, self.sigma, self.nev, self.gamma)
@@ -52,15 +52,15 @@ class CompareLES(CompareBase):
 
 
 class CompareIMD(CompareBase):
-    def __init__(self, *args):
-        super().__init__(*args)
+    def __init__(self, num_models, T=np.logspace(-1, 1, 256), n_neighbor=5, m_lancoz=10):
+        super().__init__(num_models)
         imd = __import__('msid')
         self.imd_descriptor = imd.msid.msid_descriptor
 
         # IMD hyperparameters
-        self.T = np.logspace(-1, 1, 256)  # Temperatures for heat kernel approx.
-        self.IMD_N_NBRS = 5  # Number of neighbors in graph Laplacian
-        self.M_LANCOZ = 10  # Number of Lanczos steps in SLQ
+        self.T = T # Temperatures for heat kernel approx.
+        self.IMD_N_NBRS = n_neighbor  # Number of neighbors in graph Laplacian
+        self.M_LANCOZ = m_lancoz  # Number of Lanczos steps in SLQ
 
     def _comp_desc(self, data):
         desc = self.imd_descriptor(data, ts=self.T, k=self.IMD_N_NBRS, graph_builder='sparse', m=self.M_LANCOZ)
@@ -73,8 +73,8 @@ class CompareIMD(CompareBase):
 
 
 class CompareTDA(CompareBase):
-    def __init__(self, bnum, *args):
-        super().__init__(*args)
+    def __init__(self, num_models, bnum):
+        super().__init__(num_models)
         ripser = __import__('ripser')
         self.rips = ripser.Rips(maxdim=2)
         self.persim = __import__('persim')
@@ -91,12 +91,12 @@ class CompareTDA(CompareBase):
 
 
 class CompareGS(CompareBase):
-    def __init__(self, *args):
-        super().__init__(*args)
+    def __init__(self, num_models, ngs=200):
+        super().__init__(num_models)
         gs = __import__('gs')
         self.gs = gs
 
-        self.NGS = 200  # Tori results in Figure 1(d) are with NGS=2000, reduced here for speed
+        self.NGS = ngs  # Tori results in Figure 1(d) are with NGS=2000, reduced here for speed
 
     def _comp_desc(self, data):
         desc = self.gs.rlts(data, n=self.NGS)
@@ -107,25 +107,25 @@ class CompareGS(CompareBase):
         return dist
 
 
-class CompareGW:
-    def __init__(self, iter_num, dict_keys):
+class CompareGW(CompareBase):
+    def __init__(self, num_models):
+        super().__init__(num_models)
         self.ot = __import__('ot')
-        self.all_distances = {key: np.zeros((iter_num, 1)) for key in dict_keys}
 
-    def compare_dataset(self, ite, data1, data2, key):
+    def compare_dataset(self, data1, data2, m_id1, m_id2):
         n = data1.shape[0]
         p = self.ot.unif(n)
         q = self.ot.unif(n)
 
         dist1 = spat.distance.cdist(data1, data1)
         dist2 = spat.distance.cdist(data2, data2)
-        self.all_distances[key][ite] = self.ot.gromov_wasserstein2(dist1, dist2, p, q)
+        self.all_distances[m_id1, m_id2] = self.ot.gromov_wasserstein2(dist1, dist2, p, q)
 
 
 class CompareIMDbyLES(CompareBase):
-    def __init__(self, gamma, *args):
-        super().__init__(*args)
-        self.T = np.logspace(-1, 1, 256)  # Temperatures for heat kernel approx.
+    def __init__(self, num_models, gamma, T=np.logspace(-1, 1, 256)):
+        super().__init__(num_models)
+        self.T = T  # Temperatures for heat kernel approx.
         self.gamma = gamma
 
     def _comp_desc(self, les_desc):

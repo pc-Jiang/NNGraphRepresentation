@@ -1,3 +1,6 @@
+import json
+import numpy as np
+
 from models import get_pret_models
 from datasets import get_image_dataset_subset, model_representation
 
@@ -19,3 +22,18 @@ def prepare_experiments(config):
     activation_list = model_representation(model_list, handles_list, dl, config.num_samples)
     
     return model_name_list, activation_list
+
+
+def save_json(file_path, *args):
+    data2save = []
+
+    for arg in args:
+        if isinstance(arg, np.ndarray):
+            arg = arg.tolist()
+        elif isinstance(arg, dict):
+            for k, v in arg.items():
+                arg[k] = v.tolist()
+        data2save.append(arg)
+
+    with open(file_path, 'w') as f:
+        json.dump(data2save, f)
