@@ -20,13 +20,13 @@ class ActivationHook:
         # self.activation.append(op)
 
 
-def get_named_layers(model, record_layers):
+def get_named_layers(model, model_name, record_layers):
 
     handles = {}
     all_layers = list(model.named_children())
     for id in record_layers:
         name, layer = all_layers[id]
-        handles[name] = ActivationHook(layer)
+        handles[model_name+name] = ActivationHook(layer)
     
     return handles
 
@@ -66,7 +66,8 @@ def get_pret_models(model_name, pret=True, record_layers=[-2,]):
     else:
         raise NotImplementedError(f"{model_name} model not implemented!")
     
-    handles = get_named_layers(net, record_layers)
+    model_name = model_name + 'T' if pret else 'F'
+    handles = get_named_layers(net, model_name, record_layers)
     net.eval()
 
     # preprocess = weights.transforms()

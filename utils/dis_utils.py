@@ -2,15 +2,13 @@ from collections import OrderedDict
 from distances import comparisons
 
 
-def reorgnize_activation(activation_list, model_names):
+def reorgnize_activation(activation_list):
     new_act_dict = {}
     for i, activation in enumerate(activation_list):
-        name = model_names[i]
 
         for k, v in activation.items():
             # k is the layer to be recorded
-            new_key = name + k # new_key: model+pret+layer
-            new_act_dict[new_key] = v
+            new_act_dict[k] = v
 
     return new_act_dict
 
@@ -50,7 +48,7 @@ def get_all_distances(dis_name_list, activation_list,  model_names):
     '''
     print('Starting calculating distances! ')
 
-    act_dict = reorgnize_activation(activation_list,  model_names)
+    act_dict = reorgnize_activation(activation_list)
     act_dict = OrderedDict(act_dict)
     all_dist = {}
 
