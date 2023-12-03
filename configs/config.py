@@ -1,7 +1,7 @@
 class ExpConfig(object):
     def __init__(self) -> None:
         self.num_wkr = 2
-        self.batch_size = 64
+        self.batch_size = 16
         self.dataset = 'CIFAR10'
         self.target_class = [0, ]
         self.num_samples = 500

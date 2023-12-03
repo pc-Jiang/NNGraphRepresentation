@@ -33,7 +33,8 @@ def get_image_dataset_subset(dataset_name='CIFAR10',
         subset_idx += [i for i, (_, c) in enumerate(dataset_all) if c == l]
     dataset = Subset(dataset_all, subset_idx)
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True,
-                             num_workers=num_wks, drop_last=True, collate_fn=collate_f)
+                             num_workers=num_wks, drop_last=True, collate_fn=collate_f, 
+                             pin_memory=False)
     return data_loader
 
 

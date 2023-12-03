@@ -1,5 +1,6 @@
 from collections import OrderedDict
 from distances import comparisons
+import time
 
 
 def get_distance(dis_name, act_dict):
@@ -40,10 +41,15 @@ def get_all_distances(dis_name_list, act_dict):
     act_dict = OrderedDict(act_dict)
     all_dist = {}
 
+    running_times = []
     for dis in dis_name_list:
+        st_time = time.time()
         all_dist[dis] = get_distance(dis, act_dict)
-    
+        print(f'Finish calculating {dis} distances! ')
+        end_time = time.time()
+        running_times.append(end_time-st_time)
+
     row_names = list(act_dict.keys())
     print('Finish calculating distances! ')
 
-    return all_dist, row_names
+    return all_dist, row_names, running_times

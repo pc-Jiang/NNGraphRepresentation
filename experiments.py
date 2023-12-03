@@ -23,10 +23,10 @@ def compare_representation_across_models():
     save_json(osp.join(RESULT_DIR, config.exp_name, 'config.json'), config)
 
     activation_dict = prepare_experiments(config)
-    all_dist, row_names = get_all_distances(config.distance_measure, activation_dict)
+    all_dist, row_names, running_times = get_all_distances(config.distance_measure, activation_dict)
     heatmap_plot(config.exp_name, all_dist, row_names)
 
-    save_json(osp.join(RESULT_DIR, config.exp_name, 'distances.json'), all_dist, row_names)
+    save_json(osp.join(RESULT_DIR, config.exp_name, 'distances.json'), all_dist, row_names, running_times)
 
 
 def compare_learnt_unlearnt():
@@ -41,10 +41,10 @@ def compare_learnt_unlearnt():
     save_json(osp.join(RESULT_DIR, config.exp_name, 'config.json'), config)
 
     activation_dict = prepare_experiments(config)
-    all_dist, row_names = get_all_distances(config.distance_measure, activation_dict)
+    all_dist, row_names, running_times = get_all_distances(config.distance_measure, activation_dict)
     heatmap_plot(config.exp_name, all_dist, row_names)
 
-    save_json(osp.join(RESULT_DIR, config.exp_name, 'distances.json'), all_dist, row_names)
+    save_json(osp.join(RESULT_DIR, config.exp_name, 'distances.json'), all_dist, row_names, running_times)
 
 
 def compare_layers_within_model():
@@ -60,10 +60,10 @@ def compare_layers_within_model():
     save_json(osp.join(RESULT_DIR, config.exp_name, 'config.json'), config)
 
     activation_dict = prepare_experiments(config)
-    all_dist, row_names = get_all_distances(config.distance_measure, activation_dict)
+    all_dist, row_names, running_times = get_all_distances(config.distance_measure, activation_dict)
     heatmap_plot(config.exp_name, all_dist, row_names)
 
-    save_json(osp.join(RESULT_DIR, config.exp_name, 'distances.json'), all_dist, row_names)
+    save_json(osp.join(RESULT_DIR, config.exp_name, 'distances.json'), all_dist, row_names, running_times)
 
 
 def compare_across_classes():
@@ -84,9 +84,32 @@ def compare_across_classes():
         for k, v in act_dict.items():
             activation_dict[k+'_'+str(target_class)] = v
     
-    all_dist, row_names = get_all_distances(config.distance_measure, activation_dict)
+    all_dist, row_names, running_times = get_all_distances(config.distance_measure, activation_dict)
     heatmap_plot(config.exp_name, all_dist, row_names)
-    save_json(osp.join(RESULT_DIR, config.exp_name, 'distances.json'), all_dist, row_names)
+    save_json(osp.join(RESULT_DIR, config.exp_name, 'distances.json'), all_dist, row_names, running_times)
+
+
+def compare_across_classes_VGG():
+    # answer question: does representation with different labels for trained models similar? 
+    # assumption: representation for same labels will be smaller than cross labels
+    config = ExpConfig()
+    config.exp_name = 'compare_classes_VGG'
+    config.record_input = True
+    config.model_names = ['VGG', ]
+    config.distance_measure = ['les', 'gw', 'imd']
+    config.target_class = [0, 1]
+    os.makedirs(osp.join(RESULT_DIR, config.exp_name), exist_ok=True)
+    save_json(osp.join(RESULT_DIR, config.exp_name, 'config.json'), config)
+
+    activation_dict = {}
+    for target_class in config.target_class:
+        act_dict = prepare_experiments(config, target_class)
+        for k, v in act_dict.items():
+            activation_dict[k+'_'+str(target_class)] = v
+    
+    all_dist, row_names, running_times = get_all_distances(config.distance_measure, activation_dict)
+    heatmap_plot(config.exp_name, all_dist, row_names)
+    save_json(osp.join(RESULT_DIR, config.exp_name, 'distances.json'), all_dist, row_names, running_times)
 
 
 if __name__ == '__main__':
