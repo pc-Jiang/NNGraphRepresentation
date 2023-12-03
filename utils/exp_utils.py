@@ -6,25 +6,36 @@ from datasets import get_image_dataset_subset, model_representation
 from configs.config import ExpConfig
 
 
-def prepare_experiments(config):
+def reorgnize_activation(activation_list):
+    new_act_dict = {}
+    for i, activation in enumerate(activation_list):
+
+        for k, v in activation.items():
+            # k is the layer to be recorded
+            new_act_dict[k] = v
+
+    return new_act_dict
+
+
+def prepare_experiments(config, target_class=0):
     print('Start record model activations! ')
-    model_name_list = []
     handles_list = []
     model_list = []
 
     for pret in config.pret:
         for name in config.model_names:
             net, transform, handles = get_pret_models(name, pret, record_layers=config.record_layers)
-            model_name_list.append(name + ('T' if pret else 'F'))
             model_list.append(net)
             handles_list.append(handles)
     
-    dl = get_image_dataset_subset(config.dataset, transform, config.batch_size, config.target_class, config.num_wkr)
+    dl = get_image_dataset_subset(config.dataset, transform, config.batch_size, [target_class, ], config.num_wkr)
 
     activation_list = model_representation(model_list, handles_list, dl, config.num_samples, config.record_input)
     print('Get all model activations! ')
+
+    activation_dict = reorgnize_activation(activation_list)
     
-    return model_name_list, activation_list
+    return  activation_dict
 
 
 def save_json(file_path, *args):

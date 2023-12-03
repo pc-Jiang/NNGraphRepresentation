@@ -22,8 +22,8 @@ def compare_representation_across_models():
     os.makedirs(osp.join(RESULT_DIR, config.exp_name), exist_ok=True)
     save_json(osp.join(RESULT_DIR, config.exp_name, 'config.json'), config)
 
-    model_name_list, activation_list = prepare_experiments(config)
-    all_dist, row_names = get_all_distances(config.distance_measure, activation_list,  model_name_list)
+    activation_dict = prepare_experiments(config)
+    all_dist, row_names = get_all_distances(config.distance_measure, activation_dict)
     heatmap_plot(config.exp_name, all_dist, row_names)
 
     save_json(osp.join(RESULT_DIR, config.exp_name, 'distances.json'), all_dist, row_names)
@@ -40,8 +40,8 @@ def compare_learnt_unlearnt():
     os.makedirs(osp.join(RESULT_DIR, config.exp_name), exist_ok=True)
     save_json(osp.join(RESULT_DIR, config.exp_name, 'config.json'), config)
 
-    model_name_list, activation_list = prepare_experiments(config)
-    all_dist, row_names = get_all_distances(config.distance_measure, activation_list,  model_name_list)
+    activation_dict = prepare_experiments(config)
+    all_dist, row_names = get_all_distances(config.distance_measure, activation_dict)
     heatmap_plot(config.exp_name, all_dist, row_names)
 
     save_json(osp.join(RESULT_DIR, config.exp_name, 'distances.json'), all_dist, row_names)
@@ -59,8 +59,8 @@ def compare_layers_within_model():
     os.makedirs(osp.join(RESULT_DIR, config.exp_name), exist_ok=True)
     save_json(osp.join(RESULT_DIR, config.exp_name, 'config.json'), config)
 
-    model_name_list, activation_list = prepare_experiments(config)
-    all_dist, row_names = get_all_distances(config.distance_measure, activation_list,  model_name_list)
+    activation_dict = prepare_experiments(config)
+    all_dist, row_names = get_all_distances(config.distance_measure, activation_dict)
     heatmap_plot(config.exp_name, all_dist, row_names)
 
     save_json(osp.join(RESULT_DIR, config.exp_name, 'distances.json'), all_dist, row_names)
@@ -72,8 +72,21 @@ def compare_across_classes():
     config = ExpConfig()
     config.exp_name = 'compare_classes'
     config.record_input = True
+    config.model_names = ['ResNet18', ]
+    config.distance_measure = ['les', 'gw', 'imd']
+    config.target_class = [0, 1]
+    os.makedirs(osp.join(RESULT_DIR, config.exp_name), exist_ok=True)
+    save_json(osp.join(RESULT_DIR, config.exp_name, 'config.json'), config)
 
-    pass
+    activation_dict = {}
+    for target_class in config.target_class:
+        act_dict = prepare_experiments(config, target_class)
+        for k, v in act_dict.items():
+            activation_dict[k+'_'+str(target_class)] = v
+    
+    all_dist, row_names = get_all_distances(config.distance_measure, activation_dict)
+    heatmap_plot(config.exp_name, all_dist, row_names)
+    save_json(osp.join(RESULT_DIR, config.exp_name, 'distances.json'), all_dist, row_names)
 
 
 if __name__ == '__main__':
