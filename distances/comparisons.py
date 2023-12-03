@@ -43,6 +43,8 @@ class CompareLES(CompareBase):
         self.gamma = gamma
 
     def _comp_desc(self, data):
+        # data - [n_sample, n_neuron], network activation
+        # desc - [n_sample, n_sample], graph
         desc = les.les_desc_comp(data, self.sigma, self.nev, self.gamma)
         return desc
 
@@ -54,8 +56,8 @@ class CompareLES(CompareBase):
 class CompareIMD(CompareBase):
     def __init__(self, num_models, T=np.logspace(-1, 1, 256), n_neighbor=5, m_lancoz=10):
         super().__init__(num_models)
-        imd = __import__('msid')
-        self.imd_descriptor = imd.msid.msid_descriptor
+        import distances.msid as imd
+        self.imd_descriptor = imd.msid_descriptor
 
         # IMD hyperparameters
         self.T = T # Temperatures for heat kernel approx.

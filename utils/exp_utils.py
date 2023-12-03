@@ -3,9 +3,11 @@ import numpy as np
 
 from models import get_pret_models
 from datasets import get_image_dataset_subset, model_representation
+from configs.config import ExpConfig
 
 
 def prepare_experiments(config):
+    print('Start record model activations! ')
     model_name_list = []
     handles_list = []
     model_list = []
@@ -19,7 +21,8 @@ def prepare_experiments(config):
     
     dl = get_image_dataset_subset(config.dataset, transform, config.batch_size, config.target_class, config.num_wkr)
 
-    activation_list = model_representation(model_list, handles_list, dl, config.num_samples)
+    activation_list = model_representation(model_list, handles_list, dl, config.num_samples, config.record_input)
+    print('Get all model activations! ')
     
     return model_name_list, activation_list
 
@@ -33,6 +36,8 @@ def save_json(file_path, *args):
         elif isinstance(arg, dict):
             for k, v in arg.items():
                 arg[k] = v.tolist()
+        elif isinstance(arg, ExpConfig):
+            arg = arg.__dict__
         data2save.append(arg)
 
     with open(file_path, 'w') as f:

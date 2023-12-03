@@ -1,7 +1,7 @@
 import os
 import torch
 import torchvision
-from configs_global import DEVICE, MODEL_DIR
+from configs.configs_global import DEVICE, MODEL_DIR
 
 os.environ['TORCH_HOME']=MODEL_DIR
 os.makedirs(MODEL_DIR, exist_ok=True)
@@ -14,8 +14,9 @@ class ActivationHook:
         self.handle = layer.register_forward_hook(self.hook_fn)
 
     def hook_fn(self, module, inp, outp):
+        bsize = inp[0].size(0)
         op = outp.clone().detach().cpu().numpy()
-        self.activation.append(op.reshape(1, -1))
+        self.activation.append(op.reshape(bsize, -1))
         # self.activation.append(op)
 
 

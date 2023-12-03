@@ -23,6 +23,11 @@ def get_distance(dis_name, act_dict):
         distance = comparisons.CompareLES(num_models)
     elif dis_name == 'gw':
         distance = comparisons.CompareGW(num_models)
+    elif dis_name == 'imd':
+        distance = comparisons.CompareIMD(num_models)
+        pass
+    elif dis_name == 'stochastic':
+        pass
     else:
         raise NotImplementedError(f'{dis_name} not implemented! ')
     
@@ -43,6 +48,8 @@ def get_all_distances(dis_name_list, activation_list,  model_names):
          all_dist - dict, key: distance name in dis_name_list; value: distance matrix in the order of act_dict.keys()
         row_names - act_dict.keys() indicating the columns and rows in the distance matrix
     '''
+    print('Starting calculating distances! ')
+
     act_dict = reorgnize_activation(activation_list,  model_names)
     act_dict = OrderedDict(act_dict)
     all_dist = {}
@@ -51,5 +58,6 @@ def get_all_distances(dis_name_list, activation_list,  model_names):
         all_dist[dis] = get_distance(dis, act_dict)
     
     row_names = list(act_dict.keys())
+    print('Finish calculating distances! ')
 
     return all_dist, row_names

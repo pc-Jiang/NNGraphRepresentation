@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from configs_global import FIG_DIR
+from configs.configs_global import FIG_DIR
 
 os.environ['NUMEXPR_MAX_THREADS'] = '16'
 plt.rcParams.update({'font.size': 8})
