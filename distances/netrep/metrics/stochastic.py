@@ -1,7 +1,3 @@
-r"""
-Downloaded from https://github.com/ahwillia/netrep
-"""
-
 from __future__ import annotations
 import itertools
 import multiprocessing
