@@ -1,6 +1,6 @@
 # Neural Network Representation as Graph
 
-Author: Pengcen Jiang, YIngyu Lin
+Author: Pengcen Jiang, Yingyu Lin
 
 Course: DSC205 Geometry of Data, FA23@UCSD 
 
