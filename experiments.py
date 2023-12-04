@@ -18,7 +18,7 @@ def compare_representation_across_models():
     config = ExpConfig()
     config.exp_name = 'compare_across_models'
     config.model_names = ['AlexNet', 'VGG', 'ResNet18', 'ResNet50']
-    config.distance_measure = ['les', 'gw', 'imd', ]
+    config.distance_measure = ['les', 'gw', 'imd', 'stochastic']
     os.makedirs(osp.join(RESULT_DIR, config.exp_name), exist_ok=True)
     save_json(osp.join(RESULT_DIR, config.exp_name, 'config.json'), config)
 
@@ -114,3 +114,5 @@ def compare_across_classes_VGG():
 
 if __name__ == '__main__':
     compare_representation_across_models()
+
+# %%
