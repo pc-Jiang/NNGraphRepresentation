@@ -1,5 +1,6 @@
 import argparse
 import experiments
+from experiments import run_experiment
 
 
 if __name__ == '__main__':
@@ -10,4 +11,8 @@ if __name__ == '__main__':
 
     for exp in experiments2analyze:
         if exp in dir(experiments):
-            getattr(experiments, exp)()
+            if exp != 'replot':
+                exp_configs = getattr(experiments, exp)()
+                run_experiment(exp_configs)
+            else:
+                getattr(experiments, exp)()

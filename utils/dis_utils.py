@@ -13,7 +13,6 @@ def get_distance(dis_name, act_dict):
         distance = comparisons.CompareGW(num_models)
     elif dis_name == 'imd':
         distance = comparisons.CompareIMD(num_models)
-        pass
     elif dis_name == 'stochastic':
         pass
     else:

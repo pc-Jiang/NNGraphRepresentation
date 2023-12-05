@@ -53,3 +53,15 @@ def save_json(file_path, *args):
 
     with open(file_path, 'w') as f:
         json.dump(data2save, f)
+
+
+def load_json(file_path):
+    with open(file_path, 'r') as f:
+        results = json.load(f)
+    
+    for arg in results:
+        if isinstance(arg, dict):
+            for k, v in arg.items():
+                arg[k] = np.array(v)
+
+    return results

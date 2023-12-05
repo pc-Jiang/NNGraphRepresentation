@@ -119,6 +119,9 @@ class CompareGW(CompareBase):
         p = self.ot.unif(n)
         q = self.ot.unif(n)
 
+        data1 = data1 / np.max(data1)
+        data2 = data2 / np.max(data2)
+
         dist1 = spat.distance.cdist(data1, data1)
         dist2 = spat.distance.cdist(data2, data2)
         self.all_distances[m_id1, m_id2] = self.ot.gromov_wasserstein2(dist1, dist2, p, q)
