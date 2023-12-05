@@ -66,7 +66,7 @@ def get_pret_models(model_name, pret=True, record_layers=[-2,]):
     else:
         raise NotImplementedError(f"{model_name} model not implemented!")
     
-    model_name = model_name + 'T' if pret else 'F'
+    model_name = model_name + ('T' if pret else 'F')
     handles = get_named_layers(net, model_name, record_layers)
     net.eval()
 
