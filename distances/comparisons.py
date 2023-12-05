@@ -7,7 +7,7 @@ import abc
 import numpy as np
 import scipy.spatial as spat
 import distances.les as les
-
+from distances.stochastic import GaussianStochasticMetric
 
 class CompareBase:
     def __init__(self, num_models):
@@ -143,4 +143,18 @@ class CompareIMDbyLES(CompareBase):
     def _comp_dist(self, desc1, desc2):
         ct = np.exp(-2 * (self.T + 1 / self.T))
         dist = np.amax(ct * np.abs(desc1 - desc2))
+        return dist
+
+
+class CompareStochastic(CompareBase):
+    def __init__(self, num_models):
+        super().__init__(num_models)
+
+    # def _comp_desc(self, data):
+
+    def _comp_dist(self, data1, data2):
+        alpha = 1
+        metric = GaussianStochasticMetric(alpha)
+        metric.fit(data1, data2)
+        dist = metric.score(data1, data2)
         return dist
