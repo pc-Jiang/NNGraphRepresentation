@@ -36,7 +36,7 @@ def compare_representation_across_models():
     config = ExpConfig()
     config.exp_name = 'compare_across_models'
     config.model_names = ['AlexNet', 'VGG', 'ResNet18', 'ResNet50']
-    config.distance_measure = ['les', 'imd', ]
+    config.distance_measure = ['les', 'gw', 'imd', 'stochastic']
     config.save_path = osp.join(RESULT_DIR, config.exp_name)
     return config
 
@@ -153,3 +153,5 @@ def replot():
 
 if __name__ == '__main__':
     compare_representation_across_models()
+
+# %%
