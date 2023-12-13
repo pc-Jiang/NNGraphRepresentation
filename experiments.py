@@ -131,11 +131,11 @@ def compare_across_classes_gw():
 def get_config_list():
     config_list = [
         compare_learnt_unlearnt(),
-        # compare_learnt_unlearnt_gw(),
+        compare_learnt_unlearnt_gw(),
         compare_layers_within_model(),
-        # compare_layers_within_model_gw(),
+        compare_layers_within_model_gw(),
         compare_across_classes(),
-        # compare_across_classes_gw(),
+        compare_across_classes_gw(),
     ]
 
     return config_list
