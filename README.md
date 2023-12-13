@@ -18,8 +18,6 @@ Run  `pip install -r requirements.txt ` to install all the required packages
 
 Optional packages and repositories for comparisons with other algorithms:
 
-- [IMD](https://github.com/xgfs/imd) [2] - clone and place the `msid` folder in the current folder.
-
 - TDA: H0, H1 and H2 bottleneck distances, requires [persim](https://pypi.org/project/persim/) , [ripser](https://pypi.org/project/ripser/).
   
   ```
@@ -28,7 +26,7 @@ Optional packages and repositories for comparisons with other algorithms:
   pip install persim
   ```
 
-- [GS](https://github.com/KhrulkovV/geometry-score) [3] - clone and place the `gs` folder in the current folder.  
+- [GS](https://github.com/KhrulkovV/geometry-score) [2] - clone and place the `gs` folder in the current folder.  
   Requires [GUDHI](https://gudhi.inria.fr/python/latest/installation.html) and [Cython](https://pypi.org/project/Cython/).
   
   ```
@@ -36,11 +34,11 @@ Optional packages and repositories for comparisons with other algorithms:
   pip install gudhi
   ```
 
-- GW [4] - requires [pot](https://pythonot.github.io/auto_examples/plot_Intro_OT.html). `pip install POT`
+- GW [3] - requires [pot](https://pythonot.github.io/auto_examples/plot_Intro_OT.html). `pip install POT`
 
 ### Run experiments
 
-Run `python main.py -a [exp_name]` for an experiment. 
+Run `python main.py -a [exp_name]` for an experiment. Available experiments are in `experiments.py`. 
 
 For example: 
 
@@ -48,11 +46,8 @@ For example:
 python main.py -a compare_representation_across_models
 ```
 
-## Repository structure
-
 ## References
 
 [1] Shnitzer, Tal, et al., "Log-euclidean signatures for intrinsic distances between unaligned datasets", ICML, 2022. \
-[2] Tsitsulin et al., "The Shape of Data: Intrinsic Distance for Data Distributions", ICLR, 2019.\
-[3] Khrulkov and Oseledets, "Geometry score: A method for comparing generative adversarial networks", ICML, 2018.\
-[4] Peyré et al., "Gromov-Wasserstein averaging of kernel and distance matrices", ICML, 2016.
+[2] Khrulkov and Oseledets, "Geometry score: A method for comparing generative adversarial networks", ICML, 2018.\
+[3] Peyré et al., "Gromov-Wasserstein averaging of kernel and distance matrices", ICML, 2016.
